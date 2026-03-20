@@ -1,0 +1,4399 @@
+<!doctype html>
+<html lang="lo">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🙏 ທັມມະບັນຍາຍອັດຕະໂນມັດ | Lao Dhamma Collection</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Phetsarath OT", "Lao UI", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #0f3460 100%
+        );
+        color: #fff;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .player-container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+      .header {
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 20px;
+      }
+      .header h1 {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+      }
+      .search-box {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+      }
+      .search-box input {
+        flex: 1;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1rem;
+      }
+      .search-box input::placeholder {
+        color: #a0d2ff;
+      }
+      .search-box button {
+        padding: 10px 20px;
+        background: #e94560;
+        border: none;
+        border-radius: 25px;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .search-box button:hover {
+        background: #ff6b6b;
+      }
+
+      .now-playing {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        margin-bottom: 20px;
+      }
+      .album-art {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto 15px;
+        background: linear-gradient(45deg, #e94560, #0f3460);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        animation: rotate 20s linear infinite;
+        animation-play-state: paused;
+      }
+      .album-art.playing {
+        animation-play-state: running;
+      }
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .dhama-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin: 10px 0 5px;
+      }
+      .dhama-artist {
+        color: #a0d2ff;
+        font-size: 1rem;
+      }
+      .dhama-album {
+        color: #888;
+        font-size: 0.9rem;
+      }
+
+      .progress-container {
+        margin: 20px 0;
+        padding: 0 10px;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+        cursor: pointer;
+        position: relative;
+      }
+      .progress {
+        height: 100%;
+        background: #e94560;
+        border-radius: 3px;
+        width: 0%;
+        transition: width 0.1s;
+      }
+      .time-display {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: #a0d2ff;
+        margin-top: 5px;
+      }
+
+      .main-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 15px 0;
+      }
+      .btn {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: #fff;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
+      .btn-play {
+        width: 65px;
+        height: 65px;
+        background: #e94560;
+        font-size: 1.5rem;
+      }
+      .btn-play:hover {
+        background: #ff6b6b;
+        transform: scale(1.15);
+      }
+
+      .volume-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        justify-content: center;
+      }
+      .volume-control input {
+        width: 100px;
+        cursor: pointer;
+      }
+
+      .playlist-section {
+        margin-top: 25px;
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+        padding-top: 20px;
+      }
+      .playlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .playlist-header h3 {
+        font-size: 1.2rem;
+      }
+      .playlist-actions button {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        margin-left: 5px;
+        transition: 0.3s;
+      }
+      .playlist-actions button:hover {
+        background: #e94560;
+      }
+
+      .playlist {
+        max-height: 350px;
+        overflow-y: auto;
+        border-radius: 10px;
+      }
+      .playlist::-webkit-scrollbar {
+        width: 6px;
+      }
+      .playlist::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+      .playlist::-webkit-scrollbar-thumb {
+        background: #e94560;
+        border-radius: 3px;
+      }
+
+      .dhama-item {
+        padding: 12px 15px;
+        margin: 5px 0;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .dhama-item:hover {
+        background: rgba(233, 69, 96, 0.3);
+      }
+      .dhama-item.active {
+        background: #e94560;
+        border-left: 4px solid #fff;
+      }
+      .dhama-item .dhama-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .dhama-item .dhama-title {
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .dhama-item .dhama-artist {
+        font-size: 0.85rem;
+        color: #a0d2ff;
+      }
+      .dhama-item .dhama-album {
+        font-size: 0.8rem;
+        color: #888;
+      }
+      .dhama-item .dhama-duration {
+        color: #888;
+        font-size: 0.9rem;
+        padding-left: 10px;
+        white-space: nowrap;
+      }
+
+      .loading,
+      .empty,
+      .no-results {
+        text-align: center;
+        padding: 30px;
+        color: #a0d2ff;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4caf50;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .toast.error {
+        background: #f44336;
+      }
+
+      @media (max-width: 480px) {
+        .player-container {
+          padding: 15px;
+        }
+        .header h1 {
+          font-size: 1.1rem;
+        }
+        .album-art {
+          width: 140px;
+          height: 140px;
+          font-size: 2.5rem;
+        }
+        .btn {
+          width: 45px;
+          height: 45px;
+        }
+        .btn-play {
+          width: 55px;
+          height: 55px;
+        }
+        .playlist-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="player-container">
+      <div class="header">
+        <h1>🙏 ທັມມະບັນຍາຍອັດຕະໂນມັດ</h1>
+        <div class="search-box">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 ຄົ້ນຫາທັມມະ, ພຣະອາຈານ..."
+          />
+          <button onclick="searchDhamas()">ຄົ້ນຫາ</button>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #a0d2ff;
+          "
+        >
+          <span
+            id="autoPlayToggle"
+            style="
+              cursor: pointer;
+              padding: 5px 10px;
+              border-radius: 15px;
+              background: rgba(255, 255, 255, 0.1);
+            "
+            onclick="toggleAutoPlay()"
+            >🔄 ເລ່ນອັດຕະໂນມັດ: ເປີດ</span
+          >
+          <span
+            id="repeatToggle"
+            style="
+              cursor: pointer;
+              padding: 5px 10px;
+              border-radius: 15px;
+              background: rgba(255, 255, 255, 0.1);
+            "
+            onclick="toggleRepeat()"
+            >🔁 ຊ້ຳ: ເປີດ</span
+          >
+        </div>
+      </div>
+
+      <div class="now-playing">
+        <div class="album-art" id="albumArt">🙏</div>
+        <div class="dhama-title" id="currentTitle">ກຳລັງໂຫຼດທັມມະ...</div>
+        <div class="dhama-artist" id="currentArtist">Lao Dhamma Collection</div>
+        <div class="dhama-album" id="currentAlbum">Album</div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar">
+          <div class="progress" id="progress"></div>
+        </div>
+        <div class="time-display">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+      </div>
+
+      <div class="main-controls">
+        <button class="btn" id="prevBtn" title="ທັມມະກ່ອນ">⏮</button>
+        <button class="btn btn-play" id="playBtn" title="ເລ່ນ/ຢຸດ">▶</button>
+        <button class="btn" id="nextBtn" title="ທັມມະຖັດໄປ">⏭</button>
+      </div>
+
+      <div class="volume-control">
+        <span>🔊</span>
+        <input
+          type="range"
+          id="volumeSlider"
+          min="0"
+          max="1"
+          step="0.1"
+          value="0.8"
+        />
+      </div>
+
+      <div class="playlist-section">
+        <div class="playlist-header">
+          <h3>📋 ລາຍການທັມມະ <span id="dhamaCount">(0)</span></h3>
+          <div class="playlist-actions">
+            <button onclick="shuffleDhamas()">🔀 ສະຫຼັບ</button>
+            <button onclick="copyPlaylist()">🔗 ຄັດລອກ</button>
+          </div>
+        </div>
+        <div class="playlist" id="playlist">
+          <div class="loading">ກຳລັງໂຫຼດລາຍຊື່ທັມມະ...</div>
+        </div>
+      </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+    <div class="toast" id="toast">ພ້ອມແລ້ວ! 🙏</div>
+
+    <script>
+      // 🙏 ລາຍຊື່ທັມມະລາວຈາກ lao-online.com (ຕົວຢ່າງ 50+ ທັມມະ)
+      const laoDhamas = [
+        {
+          title: "ການດຸມັ່ນບໍ່ເອົາເມົາຫລິ້ນ ເມົາມ່ວນ ເມົາບໍ່ຫາຍ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-189.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 1,
+        },
+        {
+          title: "ການທຳບຸນໃນພຸທສາສນາ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-184.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 2,
+        },
+        {
+          title: "ຄວາມຍິນດີໃນທັມ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-185.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 3,
+        },
+        {
+          title: "ຄວາມມ່ວນໃນທາງໂລກ ຄວາມສຸກໃນທາງທັມ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-186.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 4,
+        },
+        {
+          title: "ຄວາມເປັນມາຂອງພຸທສາສນາໃນປະເທດລາວ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-174.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 5,
+        },
+        {
+          title: "ຄາຣະວະທັມມະ 6 ຢ່າງ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-178.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 6,
+        },
+        {
+          title: "ຄຸນສົມບັດອຸບາສົກ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-156.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 7,
+        },
+        {
+          title: "ງານເຮັດບຸນຍົກຍອດຊໍ່ຟ້າ ແລະຫໍແຈກ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-191.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 8,
+        },
+        {
+          title: "ຈຸດປະສົງສ້າງວັດ ທຳບຸນ ແລະວິທີທຳບຸນ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-187.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 9,
+        },
+        {
+          title: "ຈຸດປະສົງໃນການຈັດງານປະຕິບັດທັມ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-173.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 10,
+        },
+        {
+          title: "ສ້າງຄວາມສາມັກຄີ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-190.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 11,
+        },
+        {
+          title: 'ທັມມະ"ທຣິກ" ເທດອ້ອມກິເລດພາຄົນໜີຈາກທັມ',
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-188.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 12,
+        },
+        {
+          title: "ບຸນກະຖິນ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-179.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 13,
+        },
+        {
+          title: "ປວັດຕົ້ນໂພ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-176.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 14,
+        },
+        {
+          title: "ພຣະສີອະຣິຍະເມດໄຕ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-192.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 15,
+        },
+        {
+          title: "ພິທີກັມໃນການສົມໂພດ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-181.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 16,
+        },
+        {
+          title: "ມົງຄຸນ 1",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-195.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 17,
+        },
+        {
+          title: "ມົງຄຸນ 2",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-196.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 18,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-180.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 19,
+        },
+        {
+          title: "ມົງຄຸນຕື່ນຂ່າວ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-175.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 20,
+        },
+        {
+          title: "ວິທີທຳບຸນໃນສາສນາ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-183.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 21,
+        },
+        {
+          title: "ວັທນະທັມກັບຄວາມເຊື່ອ ຄະດີໂລກແລະຄະດີທັມ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-177.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 22,
+        },
+        {
+          title: "ເງິນສົງ ມູນນິທິຂອງສາສນາ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-182.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 23,
+        },
+        {
+          title: "ເນື່ອງໃນວັນມາຄະບູຊາ",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-157.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 24,
+        },
+        {
+          title: "ໂທດຂອງຄວາມມ່ວນ 1",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-193.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 25,
+        },
+        {
+          title: "ໂທດຂອງຄວາມມ່ວນ 2",
+          artist: "ຍທ. ງອນ ດຳລົງບຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-194.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 26,
+        },
+        {
+          title: "ຂັນຫ້າແລະປະຣະມັດຖະທັມ",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-132.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 27,
+        },
+        {
+          title: "ຂັນຫ້າແລະອາຍະຕະນະ",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-133.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 28,
+        },
+        {
+          title: "ສະຕິປັດຖານ 1",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-135.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 29,
+        },
+        {
+          title: "ສະຕິປັດຖານ 2",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-136.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 30,
+        },
+        {
+          title: "ນິວອນຫ້າ",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-137.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 31,
+        },
+        {
+          title: "ບຸນອົບຮົບປະຕິບັດເມື່ອວັນທີ 16-09-2012",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-145.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 32,
+        },
+        {
+          title: "ບຸນອົບຮົມກັມມະຖານ ທີ່ວັດໂພນໄຊແຂວງບໍ່ແກ້ວ",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-141.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 33,
+        },
+        {
+          title: "ພຸທປວັດ 1",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-130.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 34,
+        },
+        {
+          title: "ຮູບ 28",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-134.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 35,
+        },
+        {
+          title: "ເນື່ອງໃນງານເຂົ້າປະດັບດິນປີ 2012",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-138.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 36,
+        },
+        {
+          title: "ເນື່ອງໃນບຸນມາຄະບູຊາປີ 2012",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-143.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 37,
+        },
+        {
+          title: "ເນື່ອງໃນບຸນວິສາຂະບູຊາ 2012",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-144.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 38,
+        },
+        {
+          title: "ເນື່ອງໃນບຸນຫໍ່ເຂົ້າສລາກ 2012",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-139.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 39,
+        },
+        {
+          title: "ເນື່ອງໃນບຸນອອກພັນສາ 2012",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-140.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 40,
+        },
+        {
+          title: "ເນື່ອງໃນວັນອອກພັນສາ ທີ່ນາຄູນປີ 2011",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-142.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 41,
+        },
+        {
+          title: "ແນວທາງການປະຕິບັດທັມ",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-131.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 42,
+        },
+        {
+          title: "ໃຫ້ໂອວາດແກ່ຄຣູອາຈານແລະນິສິດ ທີ່ວັດອົງຕື້ເນື່ອງໃນໂອກາດ 80 ປີ",
+          artist: "ຍທ. ຊາລີ ກັນຕະສິໂລ - VEN.SALI KANTASILO",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-146.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 43,
+        },
+        {
+          title: "ທັມມະກັບຊີວິດສັງຄົມ",
+          artist: "ພອ. ສົມລິດ ສຸກສົມຫວັງ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-098.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 44,
+        },
+        {
+          title: "ປວັດການບວດຂອງພຣະສົມລິດ ສຸກສົມຫວັງ",
+          artist: "ພອ. ສົມລິດ ສຸກສົມຫວັງ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-110.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 45,
+        },
+        {
+          title: "ຄວາມໝາຍຂອງບຸນອອກພັນສາປະວໍຣະນາ",
+          artist: "ພອ. ອານຸຊາ ບຸບຜາ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-130.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 46,
+        },
+        {
+          title: "ຄວາມເຂົ້າໃຈໃນເຣື່ອງຂອງສີນ",
+          artist: "ພອ. ອານຸຊາ ບຸບຜາ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-057.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 47,
+        },
+        {
+          title: "ພຣະໄຕປິດົກ",
+          artist: "ພອ. ອານຸຊາ ບຸບຜາ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-040.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 48,
+        },
+        {
+          title: "ອະຣິຍະສັດ 4",
+          artist: "ພອ. ອານຸຊາ ບຸບຜາ & ມອ. ປານີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-102.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 49,
+        },
+        {
+          title: "ຕ້ອງມີສັດທາກ່ອນ",
+          artist: "ມຂ. ຄຳແພງ & ມອ. ສີດອກຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-140.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 50,
+        },
+        {
+          title: "ຊີວິດຄູ່ກັບທັມມະ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-055.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 51,
+        },
+        {
+          title: "ທັມມະຄູ່ກັບຊີວິດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-156.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 52,
+        },
+        {
+          title: "ການບຳລຸງລ້ຽງບິດາມານດາ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-149.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 53,
+        },
+        {
+          title: "ຂັນ 5",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-154.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 54,
+        },
+        {
+          title: "ຄວາມກະຕັນຍູກະຕະເວທີ ຕໍ່ບິດາມານດາ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-155.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 55,
+        },
+        {
+          title: "ການຄົບສັດຕະບຸຣຸດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-169.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 56,
+        },
+        {
+          title: "ການທຳຄວາມພຽນ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-082.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 57,
+        },
+        {
+          title: "ກັມ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-080.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 58,
+        },
+        {
+          title: "ຄວາມທຸກຂອງຜູ່ທີ່ບໍຣິໂພກກາມ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-024.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 59,
+        },
+        {
+          title: "ຄວາມພຽນ 4 ຢ່າງ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-119.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 60,
+        },
+        {
+          title: "ສັມມາທິດຖິເບື້ອງຕົ້ນ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-118.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 61,
+        },
+        {
+          title: "ທິດທັງ 6",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-149.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 62,
+        },
+        {
+          title: "ທັມ 4 ປະການທີ່ຫາໄດ້ຍາກ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-087.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 63,
+        },
+        {
+          title: "ບຸບເພສັນນິວາດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-109.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 64,
+        },
+        {
+          title: "ຜູ່ແບກຂອງໜັກ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-029.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 65,
+        },
+        {
+          title: "ມະນຸດຜີ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-101.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 66,
+        },
+        {
+          title: "ວ່າຈາຂອງສັຕບຸຣຸດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-064.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 67,
+        },
+        {
+          title: "ວາຈາທີ່ບໍ່ມີໂທດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-024.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 68,
+        },
+        {
+          title: "ວັນມາຄະບູຊາ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-092.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 69,
+        },
+        {
+          title: "ວັນແມ່",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-054.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 70,
+        },
+        {
+          title: "ອະບາຽຍະມຸກ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-097.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 71,
+        },
+        {
+          title: "ອະຣິຍະສັດ 4",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-018.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 72,
+        },
+        {
+          title: "ອຳນາດຂອງໂທສະ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-171.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 73,
+        },
+        {
+          title: "ເວນ ຍ່ອມລະງັບໂດຽການບໍ່ຈອງເວນ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-116.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 74,
+        },
+        {
+          title: "ສີນທານສີນພາວະນາ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-100.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 76,
+        },
+        {
+          title: "ເຮົາຄວນຈະປະຕິບັດຕົນຈັ່ງໃດເມື່ອຖືກກ່າວຫາ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມຂ. ບຸນມາ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-126.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 77,
+        },
+        {
+          title: "ການຢາກເປັນໝໍ ຂອງແມ່ອອກບຸນທັນ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບຸນທັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-159.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 78,
+        },
+        {
+          title: "ພຣະພຸທເຈົ້າເພິ່ນສອນຫຍັງ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບຸນມາ & ພອ. ອານຸຊາ ບຸບຜາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-090.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 79,
+        },
+        {
+          title: "3 ດີ 2 ໜ້າທີ່",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບຸນລ້ຽງ ໄຊໂພສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-151.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 80,
+        },
+        {
+          title: "ການທຳບຸນ ທານເພື່ອລະ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບຸນລ້ຽງ ໄຊໂພສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-113.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 81,
+        },
+        {
+          title: "ການທຳບຸນໂດຍບໍ່ມີເງິນ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບຸນລ້ຽງ ໄຊໂພສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-150.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 82,
+        },
+        {
+          title: "ຊີວາປວັດແມ່ບຸນລ້ຽງ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບຸນລ້ຽງ ໄຊໂພສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-107.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 83,
+        },
+        {
+          title: "ທັມມະຂອງແມ່ອອກບົວພັນ ສີນ 5 ຢາວິເສດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-167.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 84,
+        },
+        {
+          title: "ປວັດຂອງພຣະພຸທເຈົ້າ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-152.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 85,
+        },
+        {
+          title: "ປະສົບການຊີວິດຂອງແມ່ບົວພັນ",
+          artist:
+            "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ບົວຄຳ & ມອ. ມອ. ຈັນໄຕ ທັມມະວົງສາ & ມອ. ບົວພັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-152.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 86,
+        },
+        {
+          title: "ການທຳບຸນດ້ວຍຄວາມເຄົາຣົບ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-162.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 87,
+        },
+        {
+          title: "ການມີຄວາມຮັກແລະໃຊ້ຊິວິດຄູ່ ໂດຍທີ່ມີທັມມະເປັນສິ່ງນຳທາງ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-157.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 88,
+        },
+        {
+          title: "ຄວາມຕັ້ງໃຈໃນສັດຈະຂອງຕົນເອງ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-163.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 89,
+        },
+        {
+          title: "ທັມມະກັບການຄອງເຮືອນ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-164.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 90,
+        },
+        {
+          title: "ທັມມະຊ່ອຍແກ້ໄຂປັນຫາຊີວິດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-158.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 91,
+        },
+        {
+          title: "ຄວາມໂກດ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ...",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-066.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 92,
+        },
+        {
+          title: "ທຳດີໄດ້ດີ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ...",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-111.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 93,
+        },
+        {
+          title: "ເປັນຫຍັງ ມອ. ... ຈຶ່ງສົນໃຈທັມມະ",
+          artist: "ມຂ. ນ້ອຍ ບົວພັນ...",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-061.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 94,
+        },
+        {
+          title: "ທຸກມາຈາກໃສ",
+          artist: "ມຂ. ບຸນມາ  & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-064.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 95,
+        },
+        {
+          title: "ພົມວິຫານ 4",
+          artist: "ມຂ. ບຸນມາ  & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-093.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 96,
+        },
+        {
+          title: "ສົງເຄາະພັນລະຍາ ສາມີ ແລະລ້ຽງດູບຸດ",
+          artist: "ມຂ. ບຸນມາ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-153.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 97,
+        },
+        {
+          title: "ຊີວິດຄະຣາວາດເປັນຈັ່ງໃດ",
+          artist: "ມຂ. ບຸນມາ & ມອ. ນ້ອຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-091.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 98,
+        },
+        {
+          title: "ອານິສົງຂອງການທຳບຸນ",
+          artist: "ມຂ. ບຸນມາ & ມອ. ແສງສຸລິຍາ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-082.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 99,
+        },
+        {
+          title: "ອານິສົງຂອງການທຳບຸນ",
+          artist: "ມຂ. ບຸນມາ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-165.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 100,
+        },
+        {
+          title: "ການບຳເພັນຢູ່ເຮືອນແລະຢູ່ວັດ",
+          artist: "ມຂ. ພູສອນ ສີພັນນນະວົງ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-094.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 101,
+        },
+        {
+          title: "ການປະຕິບັດສີນ 5",
+          artist: "ມອ. ຈັນ ທັມມະວົງສາ & ມອ. ຄຳພັນ ສີພັນທອງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-148.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 102,
+        },
+        {
+          title: "ທັມມະກັບຊີວິດຂອງມະນຸດ ເພື່ອຈະນ້ອມເຂົ້າມາຫາຕົວ",
+          artist: "ມອ. ຈັນໄຕ ທັມມະວົງສາ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-121.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 103,
+        },
+        {
+          title: "ຊີວິດຂອງທ່ານໝໍໜອມ",
+          artist: "ມອ. ສຸດທະໜອມ ສຸວັນນະຄຳ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-033.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 104,
+        },
+        {
+          title: "ທັມມະກັບວັທນະທັມ",
+          artist:
+            "ມອ. ດວງເດືອນ ວີຣະວົງສ໌ & ມອ. ແສງສຸລິຍາ ຫລວງລິດສັກດາ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-157.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 105,
+        },
+        {
+          title: "ທຸກຢູ່ໃນອຸປະທານຂັນ 5",
+          artist: "ມອ. ບຸນທັນ ອຸດົມ & ມອ. ປານີ & ມອ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-042.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 106,
+        },
+        {
+          title: "ຊີວິດນາງແພດ ສຸດທະໜອມ ສຸວັນນະພົງ",
+          artist: "ມອ. ບົວຄຳ & ມອ. ສຸດທະໜອມ ສຸວັນນະພົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-170.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 107,
+        },
+        {
+          title: "ຊີວິດຂອງຄະຣາວາດຄອງເຮືອນ",
+          artist: "ມອ. ບົວຄຳ & ມອ. ດອກຈັນ & ມອ. ສົມຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-128.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 108,
+        },
+        {
+          title: "ການດຳລົງຊີວິດເພື່ອປັບໂຕເຂົ້າກັບສັງຄົມ",
+          artist: "ມອ. ບົວຄຳ & ມອ. ບຸນທະໜອມ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-134.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 109,
+        },
+        {
+          title: "ລູກກະຕັນຍູ",
+          artist: "ມອ. ບົວຄຳ & ມອ. ບຸນເພັງ & ມອ. ບຸນມາ & ພອ. ວຽງໄຊ  ບຸນທະລາດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-166.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 110,
+        },
+        {
+          title: "ການດຳລົງຊີວິດຂອງແມ່ບົວພັນ",
+          artist: "ມອ. ບົວພັນ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-050.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 111,
+        },
+        {
+          title: "ທັມມະເປັນຈັງໃດແທ້",
+          artist: "ມອ. ບົວພັນ & ມອ. ບົວຄຳ & ອຈ. ທະວີໄຊ ພູມປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-053.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 112,
+        },
+        {
+          title: "ປະສົບການຊີວິດຂອງແມ່ປານີ",
+          artist: "ມອ. ປານີ & ມອ. ບົວຄຳ & ພອ. ສິງແກ້ວ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-073.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 113,
+        },
+        {
+          title: "ປະສົບການຊີວິດທີ່ກ່ຽວຂ້ອງກັບທັມມະ",
+          artist: "ມອ. ປານີ & ມອ. ບົວຄຳ & ພອ. ສິງແກ້ວ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-172.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 114,
+        },
+        {
+          title: "ການບຳເພັນປາຣະມີ",
+          artist: "ອຈ. ຄຳຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-032.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 115,
+        },
+        {
+          title: "ການປະຕິບັດກັມມະຖານ",
+          artist: "ອຈ. ຄຳຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-017.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 116,
+        },
+        {
+          title: "ການບຳເພັນສີນ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-009.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 117,
+        },
+        {
+          title: "ການປະຕິບັດຕົນຊ່ວງເຂົ້າພັນສາ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-010.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 118,
+        },
+        {
+          title: "ການໃຫ້ທານ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-008.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 119,
+        },
+        {
+          title: "ກັມ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-158.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 120,
+        },
+        {
+          title: "ຄວາມຫາໄດ້ຍາກ 5 ປະການ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-013.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 121,
+        },
+        {
+          title: "ຄະຣາວາດ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-081.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 122,
+        },
+        {
+          title: "ຊີວິດຄືຫຍັງ",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-011.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 123,
+        },
+        {
+          title: "ທັມມະ 8 ຂໍ້ ທີ່ທຽບຄຽງກັນໄດ້",
+          artist: "ອຈ. ຄຳໄຜ່ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-012.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 124,
+        },
+        {
+          title: "ສິ່ງໃດທີ່ຄົນປາຖນາ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-122.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 125,
+        },
+        {
+          title: "ຊັບພາຍນອກ ຊັບພາຍໃນ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-067.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 126,
+        },
+        {
+          title: "ປອບໃຈເມື່ອເຮົາມີທຸກ ເຕືອນໃຈເມື່ອເຮົາມີສຸກ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-095.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 127,
+        },
+        {
+          title: "ຜົນຂອງກັມ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-058.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 128,
+        },
+        {
+          title: "ວິທີການທຳບຸນ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-129.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 129,
+        },
+        {
+          title: "ຫຼັກການເວົ້າ 5 ຂໍ້",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-155.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 130,
+        },
+        {
+          title: "ອາຣົມ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-033.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 131,
+        },
+        {
+          title: "ແກ່ທຸກ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-041.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 132,
+        },
+        {
+          title: "ການສຶກສາ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-044.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 133,
+        },
+        {
+          title: "ການຕຽມຕົວ 5 ຢ່າງ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-083.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 134,
+        },
+        {
+          title: "ການທຳບຸນ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-132.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 135,
+        },
+        {
+          title: "ການມີຊີວິດຢູ່ດ້ວຍຈິດຫວ່າງ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-106.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 136,
+        },
+        {
+          title: "ກົບເຖົ້ານັ່ງເຝົ້າກໍບົວ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-071.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 137,
+        },
+        {
+          title: "ກັມ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-031.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 138,
+        },
+        {
+          title: "ຄວາມທຸກທີ່ເກີດຈາກການດື່ມຂອງເມົາ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-056.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 139,
+        },
+        {
+          title: "ຄວາມເປັນຄົນດີ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-092.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 140,
+        },
+        {
+          title: "ສະຕິປັດຖານ 4",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-084.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 141,
+        },
+        {
+          title: "ສຸກ 2 ຢ່າງ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-018.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 142,
+        },
+        {
+          title: "ດັບຄວາມຮ້ອນ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-058.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 143,
+        },
+        {
+          title: "ທັມນຳໃຫ້ເກີດຄວາມສຳເຣັດ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-093.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 144,
+        },
+        {
+          title: "ປະຕິຈະສະມຸບາດ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-131.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 145,
+        },
+        {
+          title: "ພຸທສາສນາຫ້າມຫຍັງແດ່",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-122.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 146,
+        },
+        {
+          title: "ມະຫາສົງການ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-060.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 147,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງອຸບາສົກ 7 ຂໍ້",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ບຸນເພັງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-028.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 148,
+        },
+        {
+          title: "ເຫດການແຫ່ງຄວາມເຊື່ອມຂອງພຸທສາສນາ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ບຸນເຮັງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-111.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 149,
+        },
+        {
+          title: "ຄວາມຖືກຕ້ອງ ແລະຄວາມຖືກໃຈ",
+          artist: "ອຈ. ຄຳໄຜ່ & ອຈ. ອຈ. ຄຳຈັນ  & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-020.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 150,
+        },
+        {
+          title: "7 ຫລັກທັມທີ່ບົ່ງບອກຄົນດີ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-054.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 151,
+        },
+        {
+          title: "ການກິນຊີ້ນບາບບໍ່",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-080.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 152,
+        },
+        {
+          title: "ການສະແດງຄວາມເຄົາຣົບ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-049.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 153,
+        },
+        {
+          title: "ການສະແດງຄວາມເຄົາຣົບໃນການຕ້ອງຮັບ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-059.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 154,
+        },
+        {
+          title: "ການຕັກບາດທີ່ຖືກຕ້ອງເປັນແນວໃດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-058.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 155,
+        },
+        {
+          title: "ການຮັກສາສີນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-057.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 156,
+        },
+        {
+          title: "ການຮັກສາສີນ ການກິນເຈ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-147.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 157,
+        },
+        {
+          title: "ການເສີມຄວາມງາມ ຕາມພຸທວິທີ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-063.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 158,
+        },
+        {
+          title: "ການເປັນຢູ່ຢ່າງຂົງເບັ້ງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-108.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 159,
+        },
+        {
+          title: "ການໃຫ້ທານ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-124.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 160,
+        },
+        {
+          title: "ກຳລັງໃຈສູ້ຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-110.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 161,
+        },
+        {
+          title: "ຂອງວິເສດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-111.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 162,
+        },
+        {
+          title: "ຂຽນແຜນຊິວິດເພື່ອປັບປຸງແລະປ່ຽນແປງເຈົ້າຂອງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-120.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 163,
+        },
+        {
+          title: "ຄວາມໝັ້ນຄົງຂອງຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-071.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 164,
+        },
+        {
+          title: "ຄວາມຮັກ ທັມມະ ຈິຕວິທຍາ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-115.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 165,
+        },
+        {
+          title: "ຄອງໃຈຄົນໄດ້ດ້ວຍທັມມະ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-073.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 166,
+        },
+        {
+          title: "ຄະຕິທັມສຳລັບຜູ່ຍິງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-116.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 167,
+        },
+        {
+          title: "ຄະຕິທັມສຳລັບວັນເກີດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-117.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 168,
+        },
+        {
+          title: "ຄຸນ 3 ທັມ 4 ດີ 5",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-075.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 169,
+        },
+        {
+          title: "ຈາຣິຕາ 6 ຢ່າງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-064.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 170,
+        },
+        {
+          title: "ສ້າງປໂຍດໃນຊ່ວງບຸນປີໃໝ່",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-037.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 171,
+        },
+        {
+          title: "ສິລປະໃນການດຳເນີນຊີວິດ ໃນຍຸກໂລກາພິວັດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-133.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 172,
+        },
+        {
+          title: "ຊີວິດສົມບູນຕ້ອງມີທັມມະ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-083.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 173,
+        },
+        {
+          title: "ຕອບຄຳຖາມກ່ຽວກັບບຸນກຸສົນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-076.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 174,
+        },
+        {
+          title: "ຕົນເປັນທີ່ເພິ່ງຂອງຕົນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-015.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 175,
+        },
+        {
+          title: "ທັມມະ 4 ປະການສຳລັບການດຳລົງຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-128.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 176,
+        },
+        {
+          title: "ທັມມະກັບການແກ້ໄຂປັນຫາຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-007.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 177,
+        },
+        {
+          title: "ທັມມະບໍ່ໄດ້ເຮັດໃຫ້ຄົນບ້າ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-118.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 178,
+        },
+        {
+          title: "ທັມມະໄຮໂຊ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-061.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 179,
+        },
+        {
+          title: "ບຸນຄືຫຍັງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-070.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 180,
+        },
+        {
+          title: "ບຸນເຖລະພິເສກ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-167.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 181,
+        },
+        {
+          title: "ບັນຊີຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-052.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 182,
+        },
+        {
+          title: "ບໍລິຂານ 8 ມີຫຍັງແດ່",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-016.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 183,
+        },
+        {
+          title: "ປັນຫາຄອບຄົວ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-079.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 184,
+        },
+        {
+          title: "ພອນແຫ່ງຄວາມສຳເຣັດ 5 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-068.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 185,
+        },
+        {
+          title: "ພື້ນຖານພຸທສາສນາ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-050.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 186,
+        },
+        {
+          title: "ພຸທທຳນາຍຄວາມຝັນ 16 ຂໍ້",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-107.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 187,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 01",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-085.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 188,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 02",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-086.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 189,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 03",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-087.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 190,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 04",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-088.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 191,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 05",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-089.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 192,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 06",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-090.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 193,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 07",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-091.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 194,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 08",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-092.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 195,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 09",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-093.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 196,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 10",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-094.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 197,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 11",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-095.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 198,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 12",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-096.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 199,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 13",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-097.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 200,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 14",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-098.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 201,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 15",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-099.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 202,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 16",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-100.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 203,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 17",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-101.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 204,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 18",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-102.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 205,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 19",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-103.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 206,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 20",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-104.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 207,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 21",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-105.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 208,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ 38 ປະການ 22",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-106.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 209,
+        },
+        {
+          title: "ຢູ່ດ້ວຍຄວາມຮັກ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-051.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 210,
+        },
+        {
+          title: "ລາບອັນປະເສີດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-067.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 211,
+        },
+        {
+          title: "ລາບອັນປະເສີດ 4 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-082.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 212,
+        },
+        {
+          title: "ວິທີດັບທຸກເພາະຮັກລູກ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-072.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 213,
+        },
+        {
+          title: "ຫົວໃຈການຈະເປັນເສດຖີ 4 ຢ່າງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-016.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 214,
+        },
+        {
+          title: "ຫຼັກ 8 ປະການຕັດສີນການຟັງທັມມະ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-081.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 215,
+        },
+        {
+          title: "ຫຼັກການ 5 ປະການໃນການເວົ້າ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-072.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 216,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຕຳຫຼວດ 14 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-069.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 217,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງພໍ່ຄ້າແມ່ຄ້າ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-062.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 218,
+        },
+        {
+          title: "ໜ້າທີ່ທີ່ຄວນຮູ້ໄວ້",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-074.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 219,
+        },
+        {
+          title: "ອະດີດແລະຜົນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-066.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 220,
+        },
+        {
+          title: "ອະທິຖານ 10 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-065.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 221,
+        },
+        {
+          title: "ອຸປກອນສັງເກດໃຈ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-078.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 222,
+        },
+        {
+          title: "ອົງປະກອບ 5 ຢ່າງກ່ອນສິເອີ້ນວ່າສາສນາ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-002.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 223,
+        },
+        {
+          title: "ຮູ້ທັນເທັກໂນໂລຊີແບບມີທັມມະ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-119.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 224,
+        },
+        {
+          title: "ຮົ້ວກັ້ນໃຈ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-120.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 225,
+        },
+        {
+          title: "ເຂົ້າປະດັບດິນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-123.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 226,
+        },
+        {
+          title: "ເສັ້ນທາງຂອງຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-121.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 227,
+        },
+        {
+          title: "ເປັນຄົນໜ້າຮັກ 9 ຢ່າງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-077.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 228,
+        },
+        {
+          title: "ເຫດຂອງຄວາມສາມັກຄີແລະຄວາມແຕກແຍກ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-109.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 229,
+        },
+        {
+          title: "ເອົາຂີ້ເຫຍື້ອ ອອກຈາກຫົວໃຈໄປຫຣືຍັງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-053.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 230,
+        },
+        {
+          title: "ແຮງງານຂອງໂລກາ ຜູ່ພັທນາຊາດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-166.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 231,
+        },
+        {
+          title: "ໂທດໃນການສແດງອິດທິລິດປະຕິຫານ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-127.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 232,
+        },
+        {
+          title: "ໃຈສັ່ງການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-122.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 233,
+        },
+        {
+          title: "ບຸນນີ້ຄືຫຍັງ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ຈົວ ປຸ໋ຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-128.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 234,
+        },
+        {
+          title: "ປິສນາທັມໃນງານສົບ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-033.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 235,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 1",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-039.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 236,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 2",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-040.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 237,
+        },
+        {
+          title: "ການສົມໂພດພຣະ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-132.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 238,
+        },
+        {
+          title: "ການແກ້ໄຂປັນຫາຊີວິດດ້ວຍທັມມະ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-137.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 239,
+        },
+        {
+          title: "ຄວາມສຸກຂອງຄະລືຫັດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-131.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 240,
+        },
+        {
+          title: "ຄວາມມີສັດທາຂອງຜູ່ທີ່ມີປັນຍາ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-134.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 241,
+        },
+        {
+          title: "ຄວາມຫວັງຄືພະລັງຂອງຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-039.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 242,
+        },
+        {
+          title: "ຄຸນຄ່າອັນໜ້າອັດສະຈັນຂອງສາສນາພຸທ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-124.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 243,
+        },
+        {
+          title: "ສິ່ງທີ່ມະຫາວິທຍາລັຍບໍ່ສອນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-029.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 244,
+        },
+        {
+          title: "ຝາກໄປໃຫ້ທານແທນໄດ້ບຸນບໍ່",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-129.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 245,
+        },
+        {
+          title: "ພຸທບໍຣິສັດ 4 ຄວນປະຕິບັດແນວໃດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-129.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 246,
+        },
+        {
+          title: "ພຸທບໍຣິສັດ 4 ຄວນປະຕິບັດແນວໃດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-110.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 247,
+        },
+        {
+          title: "ອະນັນຕະຣິຍະກັມ 5 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-136.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 248,
+        },
+        {
+          title: "ໄພເວນ  5 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-078.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 249,
+        },
+        {
+          title: "ໄພເວນ 5 ປະການ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-139.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 250,
+        },
+        {
+          title: "ຜົນຂອງການໃຫ້ທານ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-071.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 251,
+        },
+        {
+          title: "ການໃຫ້ທັມມະເປັນທານ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ມອ. ບົວຄຳ ສຸວັນນະລັງສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-165.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 252,
+        },
+        {
+          title: "ທັມມະປົວພາຍໃນ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ມອ. ບົວຄຳ ສຸວັນນະລັງສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-138.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 253,
+        },
+        {
+          title: "ຄວາມແຕກຕ່າງຂອງຜູ່ໃຫ້ກັບຜູ່ບໍ່ໃຫ້",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-049.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 254,
+        },
+        {
+          title: "ອາສາວະກິເຫຼດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-088.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 255,
+        },
+        {
+          title: "ເຮົາເປັນຄົນຮົກໂລກຫຣືບໍ່",
+          artist: "ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-060.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 256,
+        },
+        {
+          title: "ປະຣິນຍາຊີວິດ",
+          artist: "ອຈ. ສີສຸກ ສະເຫຼີມຄຸນ ວັດໂພນສະຫວັນ (ສາລາແດງ)",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-108.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 257,
+        },
+        {
+          title: "ເຮັດແນວໃດຊີວິດເຮົາຈຶ່ງຈະມີຄວາມສຸກ ໃນການເກີດມາເປັນມະນຸດ",
+          artist: "ອຈ. ສີທາ & ອຈ. ຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-141.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 258,
+        },
+        {
+          title: "ສີນ 5",
+          artist: "ອຈ. ສຸກ & ຈົວ ຕະປະ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-160.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 259,
+        },
+        {
+          title: "ບຸນຄຸນຄຣູ",
+          artist:
+            "ອຈ. ສົມສຸກ ມະໂນທັມ &  ອຈ. ແສງໄຊ ພຸດທະວົງ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-044.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 260,
+        },
+        {
+          title: "ບຸນທານການກະຖິນ",
+          artist: "ອຈ. ສົມສຸກ ມະໂນທັມ & ຈົວ ແຈກ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-112.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 261,
+        },
+        {
+          title: "ສາມັກຄີທັມ ນຳສູ່ອາຊ້ຽນ",
+          artist: "ອຈ. ສົມສຸກ ມະໂນທັມ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-022.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 262,
+        },
+        {
+          title: "ຄອບຄົວທີ່ສຸດລ້ຳ ຕ້ອງມີຄະຣາວາດທີ່ສຸກເລີດ",
+          artist:
+            "ອຈ. ສົມສຸກ ມະໂນທັມ & ອຈ. ແສງໄຊ ພຸດທະວົງ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-144.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 263,
+        },
+        {
+          title: "ສ້າງສັງຄົມສົງເສີມທັມ",
+          artist:
+            "ອຈ. ສົມສຸກ ມະໂນທັມ & ອຈ. ແສງໄຊ ພຸດທະວົງ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-030.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 264,
+        },
+        {
+          title: "ຊີວິດທີ່ດີງາມ ຕ້ອງຍ່າງຕາມພຣະທັມ",
+          artist:
+            "ອຈ. ສົມສຸກ ມະໂນທັມ & ອຈ. ແສງໄຊ ພຸດທະວົງ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-101.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 265,
+        },
+        {
+          title: "ບຸນນຳກັມແຕ່ງ",
+          artist:
+            "ອຈ. ສົມສຸກ ມະໂນທັມ & ອຈ. ແສງໄຊ ພຸດທະວົງ & ມອ. ຈັນໄຕ ທັມມະວົງສາ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-069.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 266,
+        },
+        {
+          title:
+            "ການປະສົນຜົນສຳເຣັດໃນທຸຣະກິດ - ສາເຫດທີ່ພາໃຫ້ຊັບເຊື່ອມ-ຊັບຈະເຣີນ",
+          artist: "ອຈ. ສົມສຸກ ມະໂນທັມ ວັດຈອມໄຕ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-154.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 267,
+        },
+        {
+          title: "ອອກພັນສາ",
+          artist: "ອຈ. ສົມສຸກ ມະໂນທັມ ວັດຈອມໄຕ & ມອ. ຈັນໄຕ ທັມມະວົງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-084.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 268,
+        },
+        {
+          title: "ການເຮັດກັມມະຖານ",
+          artist: "ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-072.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 269,
+        },
+        {
+          title: "ການເຮັດອະນາປານະກັມມະຖານ",
+          artist: "ອຈ. ສົມຊາຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-065.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 270,
+        },
+        {
+          title: "ອະຣິຍະສັດ 4",
+          artist: "ອຈ. ສົມຊາຍ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-070.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 271,
+        },
+        {
+          title: "ຄວາມບໍ່ປມາດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-113.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 272,
+        },
+        {
+          title: "ຫົນທາງອັນປະເສີດ ແມ່ນອາຣິຍະມັກມີອົງ 8",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-026.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 273,
+        },
+        {
+          title: "ໜ້າທີ່ໆຕ້ອງປະຕິບັດຕໍ່ພໍ່ແມ່ 5 ປະການ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-036.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 274,
+        },
+        {
+          title: "ສະມະຖະແລະວິປັສນາ ທີ່ຄວນປະຕິບັດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-127.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 275,
+        },
+        {
+          title: "ສັມມະທະແລະວິປັສນາ ທີ່ຄວນປະຕິບັດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-019.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 276,
+        },
+        {
+          title: "ທັມມະແກ້ທຸກທາງໃຈ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-016.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 277,
+        },
+        {
+          title: "ບຸກຄົນທີ່ຄວນຮູ້ເຣື່ອງກັມ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-018.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 278,
+        },
+        {
+          title: "ຫົນທາງອັນປະເສີດ ອາຣິີຍະມັກມີອົງ 8",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-020.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 279,
+        },
+        {
+          title: "ຫົນທາງອັນປະເສີດທີ່ປະກອບດ້ວຍອົງ 8 ປະການ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-027.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 280,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຄວາມເປັນລູກທີ່ດີ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-017.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 281,
+        },
+        {
+          title: "ມີສັດທາທີ່ບໍ່ຫວັ່ນໄຫວ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-123.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 282,
+        },
+        {
+          title: "ທັມ 4 ປະການ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-106.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 283,
+        },
+        {
+          title: "ສົນທະນາທັມມະກັບຍາດໂຍມ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ມອ. ປານີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-076.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 284,
+        },
+        {
+          title: "ທັມມະຄືສາສດາ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ມອ. ປານີ & ມອ. ບົວຄຳ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-036.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 285,
+        },
+        {
+          title: "ຜົນຂອງການສ້າງບາບກັມ ໂດຍການໄປກິນຂອງສົງ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-164.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 286,
+        },
+        {
+          title: "ກະດຳເນີນຊີວິດປະກອບດ້ວຍທັມມະ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-023.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 287,
+        },
+        {
+          title: "ການງານອັນຖືກຕ້ອງ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-125.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 288,
+        },
+        {
+          title: "ການຈະເຣີນສະຕິ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-125.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 289,
+        },
+        {
+          title: "ການຈະເຣີນສະມາທິ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-021.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 290,
+        },
+        {
+          title: "ການເຂົ້າເຖິງທັມ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-135.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 291,
+        },
+        {
+          title: "ຄວາມໝາຍຂອງອາຣິຍະມັກມີອົງ 8",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-089.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 292,
+        },
+        {
+          title: "ດຳເນີນຊີວິດໄປໃນທາງທີ່ຖືກຕ້ອງ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-116.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 293,
+        },
+        {
+          title: "ທາງທີ່ທຸກຄົນສາມາດເດີນໄດ້ ອາຣິີຍະມັກມີອົງ 8",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-022.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 294,
+        },
+        {
+          title: "ທຸກແລະດັບທຸກ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-085.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 295,
+        },
+        {
+          title: "ປະຕິຈະສະມຸບາດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-074.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 296,
+        },
+        {
+          title: "ປະຕິຈະສະມຸບາດ - ອະຣິຍະສັດ 4",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-126.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 297,
+        },
+        {
+          title: "ອະນາປານະສະຕິ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-035.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 298,
+        },
+        {
+          title: "ໂສດາບັນທີ່ສົມບູນ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-077.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 299,
+        },
+        {
+          title: "ຂັນ 5",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ & ອຈ. ກິ່ງແກ້ວ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-098.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 300,
+        },
+        {
+          title: "ສຶກສາໃຫ້ເຂົ້າໃຈອະຣິຍະສັດ 4",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ & ອຈ. ກິ່ງແກ້ວ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-063.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 301,
+        },
+        {
+          title: "ຄຸນສົມບັດຂອງໂສດາບັນ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ພອ. ອານຸຊາ ບຸບຜາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-067.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 302,
+        },
+        {
+          title: "ບັນຫາຂອງຄວາມທຸກ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ສອນວິໄລ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-091.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 303,
+        },
+        {
+          title: "ພາວະນາ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນທອງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-059.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 304,
+        },
+        {
+          title: "ການຈະເຣີນສະມາທິ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-096.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 305,
+        },
+        {
+          title: "ການຢູ່ຢ່າງພຣະອະຣິຍະເຈົ້າ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-107.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 306,
+        },
+        {
+          title: "ການໃຊ້ວາຈາ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-061.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 307,
+        },
+        {
+          title: "ຂໍ້ປະຕິບັດທີ່ຈະເຣີນງອກງາມໃນທັມມະວິນັຍ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-051.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 308,
+        },
+        {
+          title: "ສຳມາອາຊີວະ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-099.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 309,
+        },
+        {
+          title: "ຊັບ 7 ປະການ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-021.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 310,
+        },
+        {
+          title: "ປະຕິຈະສະມຸບາດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-026.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 311,
+        },
+        {
+          title: "ຜູ່ເຮັດອາຣິຍະມັກໃຫ້ສົມບູນ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-079.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 312,
+        },
+        {
+          title: "ຜັດສະ - ໃນເມື່ອສິ່ງນີ້ມີ ສິ່ງນີ້ຈະມີ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-034.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 313,
+        },
+        {
+          title: "ຫົນທາງການປະຕິບັດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-074.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 314,
+        },
+        {
+          title: "ອາຣິຍະສັດຈະຈາກພຣະໂອດ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ອາຣິຍະ ວັງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-081.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 315,
+        },
+        {
+          title: "ທັມມະຄືພຣະສາສດາ",
+          artist: "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ອາຣິຍະ ວັງສາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-053.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 316,
+        },
+        {
+          title: "ວັນວິສາຂະບູຊາ",
+          artist:
+            "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ ພູມປະເສີດ ພູມປະເສີດ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-070.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 317,
+        },
+        {
+          title: "ການດຳເນີນຊີວິດ 4  ຢ່າງ",
+          artist:
+            "ອຈ. ທະວີໄຊ ພູມປະເສີດ ພູມປະເສີດ ວັດປາຊຳປັກແຮດ & ອຈ. ອາລີໄຊ ພູມປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-040.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 318,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 1",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-147.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 319,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 2",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-148.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 320,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 3",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-149.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 321,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 4",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-150.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 322,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 5",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-151.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 323,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 6",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-152.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 324,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 7",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-153.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 325,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 8",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-154.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 326,
+        },
+        {
+          title: "ທັມມະເທສນາ ໂດຍພຣະອາຈານ ບຸນຍົງ 9",
+          artist: "ອຈ. ບຸນຍົງ ສັດຕະວະໂຣ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-155.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 327,
+        },
+        {
+          title: "ການໃຊ້ຊີວິດຢ່າງບໍ່ປມາດ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-109.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 328,
+        },
+        {
+          title: "ຄວາມຫລົງໄຫລໃນອະບາຍຍະມຸກ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-114.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 329,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ 2",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-037.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 330,
+        },
+        {
+          title: "ກ່ອນເຂົ້າພັນສາຄວນເຮັດບຸນວິທີໃດ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-055.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 331,
+        },
+        {
+          title: "ຄວາມໝາຍຂອງການເຂົ້າວັດ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-025.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 332,
+        },
+        {
+          title: "ສນິມຂອງຊີວິດ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-077.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 333,
+        },
+        {
+          title: "ບຸນເຂົ້າພັນສາ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-056.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 334,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງສາວົກ",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-084.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 335,
+        },
+        {
+          title: "ເຮືອນ 3 ນ້ຳ 4 ຂອງພໍ່ແມ່",
+          artist: "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-048.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 336,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ 3",
+          artist:
+            "ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-038.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 337,
+        },
+        {
+          title: "ທັມມະຂອງຄະຣາວາດ",
+          artist: "ອຈ. ບຸນຫລາຍ ວີລະວົງ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-096.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 338,
+        },
+        {
+          title: "ທັມມະທີ່ຈຳເປັນໃນຊີວິດປະຈຳວັນ",
+          artist: "ອຈ. ບຸນຫລາຍ ວີລະວົງ & ອຈ. ທອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-151.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 339,
+        },
+        {
+          title: "ການຕັກບາດແລະການໃຫ້ພອນ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-114.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 340,
+        },
+        {
+          title: "ຄວາມກະຕັນຍູຕໍ່ຜູ່ມີພະຄຸນ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-112.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 341,
+        },
+        {
+          title: "ຄວາມຄິດແລະການກະທຳ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-113.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 342,
+        },
+        {
+          title: "ເຄັດລັບໃນການດັບທຸກ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-046.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 343,
+        },
+        {
+          title: "ມົງຄຸນມີຄວາມໝາຍວ່າແນວໃດ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-026.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 344,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 3",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-041.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 345,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 4",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-042.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 346,
+        },
+        {
+          title: "ຄວາມເຊື່ອ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-060.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 347,
+        },
+        {
+          title: "ທັມມະກັບການຈາກລາ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ & ອຈ. ສາຍັນ ກຽດສັກສີ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-047.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 348,
+        },
+        {
+          title: "ການໂຄຣົບຄຣູອາຈານ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-030.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 349,
+        },
+        {
+          title: "ແນວທາງສ້າງຊີວິດ ເພື່ອບັນລຸຄວາມສຳເຣັດ",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-034.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 350,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 5",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-043.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 351,
+        },
+        {
+          title: "7 ຂໍ້ຄິດ ເພື່ອເຕືອນຊີວິດຂອງທ່ານ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-035.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 352,
+        },
+        {
+          title: "ທັມມະກັບນັກຮຽນນັກສຶກສາ 1",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-028.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 353,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 6",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-044.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 354,
+        },
+        {
+          title: "ຄວາມອົບອຸ່ນໃຈ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-032.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 355,
+        },
+        {
+          title: "ທັມມະກັບການເອົາຊະນະຄວາມຜິດຫວັງ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-027.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 356,
+        },
+        {
+          title: "ທັມມະກັບນັກຮຽນນັກສຶກສາ 2 - ຮັກດີໄຝ່ດີ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-029.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 357,
+        },
+        {
+          title: "ປະຣິນຍາທັງ 2 ໃບ ທຸກໆທ່ານໄດ້ຫຣືຍັງ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-024.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 358,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ 1",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-036.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 359,
+        },
+        {
+          title: "ຄົນມີຊີວິດຢູ່ຢ່າງໝັ້ນໃຈ",
+          artist:
+            "ອຈ. ບຸນເນົາ ວົງແສງສີ & ອຈ. ບຸນຕັ້ງ ເທືອງປະທຸມມາ ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-031.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 360,
+        },
+        {
+          title: "ແຜນທີ່ຊີວິດ ເຂັມທິດຫົວໃຈ - ໄວຮັກ 7",
+          artist: "ອຈ. ບຸນເນົາ ວົງແສງສີ ວັດປ່າຊຳປັກແຮດ & ພອ. ສຸລິສັກ ດວງປະເສີດ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-045.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 361,
+        },
+        {
+          title: "ຄວາມທຸກໃນໂລກນີ້",
+          artist: "ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-055.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 362,
+        },
+        {
+          title: "ບຸກຄົນທີ່ຄວນບູຊາ 8 ປະການ",
+          artist: "ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-090.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 363,
+        },
+        {
+          title: "ຫຼັກການດຳລົງຊີບໃນວັນນີ້",
+          artist: "ອຈ. ບຸນເລີຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-063.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 364,
+        },
+        {
+          title: "ສັດຈະ",
+          artist: "ອຈ. ບຸນເລີຍ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-115.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 365,
+        },
+        {
+          title: "ປຸກຄວາມພຽນ",
+          artist: "ອຈ. ບຸນເລີຍ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-137.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 366,
+        },
+        {
+          title: "ວັນວິສາຂະ",
+          artist: "ອຈ. ບຸນເລີຍ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-015.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 367,
+        },
+        {
+          title: "ບຸນທີ່ຄວນເຂົ້າໃຈ",
+          artist: "ອຈ. ບຸນເລີຍ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-014.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 368,
+        },
+        {
+          title: "ອານາປານະສະຕິ",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ກິ່ງແກ້ວ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-104.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 369,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງບັນດິດ",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ກິ່ງແກ້ວ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-161.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 370,
+        },
+        {
+          title: "ຄວາມໝາຍຂອງໂອວາທະປະຕິໂມກ",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-135.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 371,
+        },
+        {
+          title: "ຄວາມແຕກຕ່າງຂອງຜູ່ໃຫ້ ກັບຜູ່ບໍ່ໃຫ້",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-124.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 372,
+        },
+        {
+          title: "ຄົນຮົກໂລກ",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-125.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 373,
+        },
+        {
+          title: "ອາສາວະກິເລດມີຫຍັງແດ່",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-130.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 374,
+        },
+        {
+          title: "ໂອວາທະປະຕິໂມກ",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-065.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 375,
+        },
+        {
+          title: "ການແສວງຫາສັບໂດຍທັມ",
+          artist: "ອຈ. ບຸນເລີຍ & ອຈ. ອາຣິຍະ ວັງສະ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-046.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 376,
+        },
+        {
+          title: "ກັມ",
+          artist: "ອຈ. ປູ່ ຄຳໄພ ສຸພາຊາດ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-160.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 377,
+        },
+        {
+          title: "ເທັກນິກຄືທັມມະ",
+          artist: "ອຈ. ປູ່ ຄຳໄພ ຊຸພາຊາດ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-045.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 378,
+        },
+        {
+          title: "ທັມມະກັບຊີວິດ",
+          artist: "ອຈ. ປູ່ ຄຳໃສ ພົມມະເກດ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-019.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 379,
+        },
+        {
+          title: "ການໃຫ້ທັມມະເປັນທານ",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-008.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 380,
+        },
+        {
+          title: "ສາສນາ",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-142.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 381,
+        },
+        {
+          title: "ສິ່ງທີ່ຄວນຮຽນຮູ້ສາມຢ່າງ",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-022.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 382,
+        },
+        {
+          title: "ສັດທາຄືຫຍັງ",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-009.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 383,
+        },
+        {
+          title: "ທາງ",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-010.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 384,
+        },
+        {
+          title: "ພຣະລັດຕະບານ",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-007.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 385,
+        },
+        {
+          title: "ອາຣິຍະມັກມີອົງ 8",
+          artist: "ອຈ. ມະຫາອຸດອນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-048.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 386,
+        },
+        {
+          title: "ການຄົບຄົນ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-004.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 387,
+        },
+        {
+          title: "ການສັມມະທານສີນ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-047.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 388,
+        },
+        {
+          title: "ການອູປຖັມບິດາມານດາ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-025.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 389,
+        },
+        {
+          title: "ຂຶ້ນຈາກທີ່ຕ່ຳໄປຫາທີ່ສູງ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-169.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 390,
+        },
+        {
+          title: "ຫີນ 3 ເສົ້າ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-002.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 391,
+        },
+        {
+          title: "ການປະຕິບັດທັມ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-003.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 392,
+        },
+        {
+          title: "ຄວາມສຸກຄວາມທຸກຂອງພໍ່ແມ່ເກີດຈາກລູກ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-139.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 393,
+        },
+        {
+          title: "ສເນ, ສເນໃນການໃຫ້, ສເນໃນຄຳເວົ້າອ່ອນຫວານ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-005.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 394,
+        },
+        {
+          title: "ປໂຍດ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-001.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 395,
+        },
+        {
+          title: "ລະບົບຄອບຄົວ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-006.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 396,
+        },
+        {
+          title: "ເຮັດດີ ຫຣື ເຮັດຊົ່ວ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-007.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 397,
+        },
+        {
+          title: "ເຮັດດີກັບເຮັດຊົ່ວ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-079.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 398,
+        },
+        {
+          title: "ໃສ່ສເນໃຫ້ຜູ່ອື່ນ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-038.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 399,
+        },
+        {
+          title: "ການຕັ້ງຕົນໂດຍຊອບ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-153.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 400,
+        },
+        {
+          title: "ການບໍຣິຫານເວລາໃຫ້ເປັນປໂຍດ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-002.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 401,
+        },
+        {
+          title: "ການຮັບສີນ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-013.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 402,
+        },
+        {
+          title: "ການຮັບພອນ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-014.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 403,
+        },
+        {
+          title: "ກິນແນວໃດໃຫ້ເປັນປໂຍດ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-003.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 404,
+        },
+        {
+          title: "ຂອງແທ້ ຂອງທຽມ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-012.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 405,
+        },
+        {
+          title: "ຄວາມສຸກຄືຫຍັງ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-006.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 406,
+        },
+        {
+          title: "ຄວາມດີຄືຫຍັງ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-005.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 407,
+        },
+        {
+          title: "ສິລປະໃນການດຳເນີນຊີວິດ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-001.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 408,
+        },
+        {
+          title: "ນິວອນ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-015.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 409,
+        },
+        {
+          title: "ປ່ຽນນິສັຍ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-004.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 410,
+        },
+        {
+          title: "ເກັ່ງ ດີ ມີສິລທັມ ມີຄວາມສຸກ",
+          artist: "ອຈ. ມະຫາອຸດອນ & ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-011.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 411,
+        },
+        {
+          title: "ການສ້າງບຸນສ້າງກຸສົນ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-047.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 412,
+        },
+        {
+          title: "ການປະພຶດປະຕິບັດທັມ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-145.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 413,
+        },
+        {
+          title: "ກັມມະກອນແລະພຸທສາສນາ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-035.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 414,
+        },
+        {
+          title: "ຈັກ 4",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-083.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 415,
+        },
+        {
+          title: "ປີໃໝ່ລາວ ສັງຂານລ່ວງ ສັງຂານຂຶ້ນ ມື້ເນົາ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-054.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 416,
+        },
+        {
+          title: "ມະຫາໂຈນ 5 ຢ່າງ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-078.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 417,
+        },
+        {
+          title: "ເຂົ້າພັນສານີ້ແມ່ນຫຍັງ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-145.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 418,
+        },
+        {
+          title: "ການເຕືອນຕົນດ້ວຍຕົນເອງ - ການເປັນທີ່ເພິ່ງຂອງຕົນເອງ",
+          artist:
+            "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ຈົວ ສີອານັນ ພັນທະຈັນສຸກ & ຈົວ ບຸນສະຫວັດ ສາຍສົມບູນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-148.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 419,
+        },
+        {
+          title: "ຈົ່ງເຕືອນຕົນດ້ວຍຕົນເອງ",
+          artist:
+            "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ຈົວ ສີອານັນ ພັນທະຈັນສຸກ & ຈົວ ບຸນສະຫວັດ ສາຍສົມບູນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-062.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 420,
+        },
+        {
+          title: "ຄຸນສົມບັດຂອງອຸບາສົກອຸບາສິກາ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-140.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 421,
+        },
+        {
+          title: "ທັມທີ່ເປັນປໂຍດ 4 ຢ່າງ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-143.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 422,
+        },
+        {
+          title: "ທັມທີ່ເປັນປໂຍດໃຫ້ເຖິງຄວາມມຸ້ງໝາຍ 4 ຢ່າງ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-037.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 423,
+        },
+        {
+          title: "ປໂຍດໃນພົບນີ້",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-144.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 424,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຊາວພຸທ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-141.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 425,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຊາວພຸທ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-032.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 426,
+        },
+        {
+          title: "ເຂົ້າພັນສາແມ່ນຫຍັງ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ພອ. ເອກກະພັນ ຂັນຕິວົງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-114.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 427,
+        },
+        {
+          title: "ການມີອາຍຸຍືນ 6 ອ.",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-043.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 428,
+        },
+        {
+          title: "ກິບບໍ່ຮູ້ອີ່ມ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-075.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 429,
+        },
+        {
+          title: "ຄວາມໝາຍຂອງການບູຊາ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-097.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 430,
+        },
+        {
+          title: "ຄວາມເປັນມາຂອງວັນວິສາຂະ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-050.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 431,
+        },
+        {
+          title: "ຄຸນນະສົມບັດຂອງບັນດິດ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-085.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 432,
+        },
+        {
+          title: "ຄົນເຮົານີ້ເລືອກເກີດໄດ້ບໍ່",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-147.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 433,
+        },
+        {
+          title: "ສລາດສະສົມ (ເຜີ້ງ)",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-048.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 434,
+        },
+        {
+          title: "ສູດອາຍຸຍືນ 6 ອ.",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-159.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 435,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ - ບຸກຄົນທີ່ຄວນບູຊາ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-027.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 436,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ - ບູຊາບຸກຄົນທີ່ຄວນບູຊາ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-057.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 437,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ - ບັດດິດ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-043.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 438,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ - ບໍ່ຄົບຄົນພານ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-049.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 439,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ - ຢູ່ໃນຖິ່ນທີ່ເໝາະສົມ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-019.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 440,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດ - ຢູ່ໃນຖິ່ນທີ່ເໝາະສົມ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-023.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 441,
+        },
+        {
+          title: "ວັນພຣະ ວັນແຫ່ງການຟັງທັມ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-034.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 442,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຊາວພຸທ - ສຶກສາໃຫ້ເຂົ້າໃຈ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-046.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 443,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຊາວພຸທ 1",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-123.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 444,
+        },
+        {
+          title: "ໜ້າທີ່ຂອງຊາວພຸທ 2",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-156.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 445,
+        },
+        {
+          title: "ອອກພັນສາປະວໍຣະນາໝາຍຄວາມວ່າແນວໃດ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-105.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 446,
+        },
+        {
+          title: "ອະບາຽຍະມຸກ 6 ຢ່າງ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-138.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 447,
+        },
+        {
+          title: "ຮູບພາບທີ່ແຂວນຢູ່ໃນກອງກະຖິນ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-059.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 448,
+        },
+        {
+          title: "ເປີດແລ້ວໍ່ປິດ ປິດແລ້ວກໍ່ເປີດ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-143.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 449,
+        },
+        {
+          title: "ໂທດຂອງການຄົບຄົນພານ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-105.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 450,
+        },
+        {
+          title: "ໂທດຂອງການພະນັນ",
+          artist: "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-068.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 451,
+        },
+        {
+          title: "ການເຂົ້າພັນສາ",
+          artist:
+            "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-146.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 452,
+        },
+        {
+          title: "ເຂົ້າພັນສາ",
+          artist:
+            "ອຈ. ຫຸມເພັງ ພັນທະຈັນສຸກ & ອຈ. ແກ້ວພະຈັນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-108.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 453,
+        },
+        {
+          title: "ການຢູ່ຮ່ວມກັນຢ່າງມີຄວາມສຸກ",
+          artist: "ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-075.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 454,
+        },
+        {
+          title: "ຕົນເປັນທີ່ເພິ່ງຂອງຕົນ",
+          artist: "ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-073.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 455,
+        },
+        {
+          title: "ເມດຕາທັມ ຄ້ຳຈຸນໂລກ",
+          artist: "ອຈ. ອິນແປງ ມະນີໂຊ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-076.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 456,
+        },
+        {
+          title: "ພົມວິຫານ 4",
+          artist: "ອຈ. ເສີດ & ຈົວ ປຸ໋ຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-161.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 457,
+        },
+        {
+          title: "ບຸນກຸສົນພາຍໃນເຮືອນ - ຄຸນຂອງພໍ່ແມ່",
+          artist: "ອຈ. ເສີດ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-120.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 458,
+        },
+        {
+          title: "ຄຸນຂອງພໍ່ແມ່ ມີໜ້ອຍມີຫລາຍສ່ຳໃດ",
+          artist: "ອຈ. ເສີດ & ອຈ. ສຸກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-168.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 459,
+        },
+        {
+          title: "ພົມວິຫານ 4",
+          artist: "ອຈ. ເສີດ ວັດບ້ານນາດີ & ຈົວ ຜຸຍ ວັດບ້ານນາດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-099.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 460,
+        },
+        {
+          title: "7 ຢ່າງທີ່ບໍ່ຄວນລືມ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-066.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 461,
+        },
+        {
+          title: "ຄວາມບໍ່ປມາດ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-089.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 462,
+        },
+        {
+          title: "ຈຣິດ 6 ຢ່າງ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-094.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 463,
+        },
+        {
+          title: "ບາບບຸນທີ່ເປັນຄູ່ຂອງຊີວິດ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-146.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 464,
+        },
+        {
+          title: "ບຸນນີ້ຄືຫຍັງ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-136.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 465,
+        },
+        {
+          title: "ປັນຫາເທວະດາ 4 ຂໍ້",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-086.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 466,
+        },
+        {
+          title: "ມະນຸດຜູ່ມີສຸດຈຣິດທັມທັງສາມ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-062.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 467,
+        },
+        {
+          title: "ເຄື່ອງຖວາຍທານຂອງການເຂົ້າພັນສາ",
+          artist: "ອຈ. ແກ້ວພະຈັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-041.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 468,
+        },
+        {
+          title: "ຄົນມືໄວຕີນໄວ ບໍ່ມີໃຜຕ້ອງການ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ຈົວ ຊຸ້ມ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-039.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 469,
+        },
+        {
+          title: "ມົງຄຸນຊີວິດຄືຫຍັງ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ຈົວ ຊຸ້ມ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-112.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 470,
+        },
+        {
+          title: "ບຸນເຮັດແລ້ວໄປຢູ່ໃສ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ຈົວ ບຸນທະວີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-021.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 471,
+        },
+        {
+          title: "ອະກຸສົນ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ຈົວ ຜຸຍ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-069.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 472,
+        },
+        {
+          title: "ຄົນທີ່ເກີດມາມີ 4 ປະເພດ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-142.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 473,
+        },
+        {
+          title: "ບຸກຄົນທີ່ເກີດມາໃນໂລກນີ້ມີ 4 ປະເພດ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-115.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 474,
+        },
+        {
+          title: "ຈຣິດ 6 ຢ່າງ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ຄຳແສນ ວິໄລສັກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-086.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 475,
+        },
+        {
+          title: "ຊີວິດທີ່ບໍ່ງາມມີຢູ່ 5 ຢ່າງ - 1",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ຄຳແສນ ວິໄລສັກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-080.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 476,
+        },
+        {
+          title: "ຊີວິດທີ່ບໍ່ງາມມີຢູ່ 5 ຢ່າງ - 2   ຂີ້ລັກ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ຄຳແສນ ວິໄລສັກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-095.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 477,
+        },
+        {
+          title: "ປວັດການບວດຂອງອາຈານຄຳແສນ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ຄຳແສນ ວິໄລສັກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-087.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 478,
+        },
+        {
+          title: "ໂທສະຈຣິດ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ຄຳແສນ ວິໄລສັກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-100.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 479,
+        },
+        {
+          title: "ໂມຫະຈຣິດ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ຄຳແສນ ວິໄລສັກ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-045.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 480,
+        },
+        {
+          title: "ວິທີສ້າງຄວາມສຸກແບບຊາວພຸທ",
+          artist: "ອຈ. ແກ້ວພະຈັນ & ອຈ. ແສງຕະວັນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-168.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 481,
+        },
+        {
+          title: "ທຸກ 4 ຢ່າງ",
+          artist:
+            "ອຈ. ໄຂແກ້ວ & ມຂ. ບຸນມາ & ມຂ. ພູມີໄຊ & ມອ. ສີພິມ & ມອ. ສີກ໊ອງ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-103.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 482,
+        },
+        {
+          title: "ການບໍ່ຮັກຕົນ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-017.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 483,
+        },
+        {
+          title: "ຄວາມບໍ່ປມາດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-030.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 484,
+        },
+        {
+          title: "ຄວາມບໍ່ປມາດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-020.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 485,
+        },
+        {
+          title: "ທັມສາມປະການ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-104.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 486,
+        },
+        {
+          title: "ຫລັກທັມທີ່ຄວນປະຕິບັດໃນຊ່ວງບຸນປີໃໝ່",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-052.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 487,
+        },
+        {
+          title: "ສັບພະສິ່ງທີ່ເກີດຂຶ້ນ ຕັ້ງຢູ່ ດັບໄປ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-117.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 488,
+        },
+        {
+          title: "ພົມວິຫານ 4",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ພອ. ອາທິເດດ ວົງພັກດີ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-102.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 489,
+        },
+        {
+          title: "ສີນ 5 ປະການ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ຄຳເຜົ່າ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-031.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 490,
+        },
+        {
+          title: "ທັມມະກັບຄອບຄົວ - ບຸດທິດາ ຄວນປະຕິບັດຕໍ່ບິດາມານດາແບບໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ຄຳເຜົ່າ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-028.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 491,
+        },
+        {
+          title: "ທັມມະກັບຄອບຄົວ - ລູກຄວນປະຕິບັດຕົນແບບໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ຄຳເຜົ່າ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-025.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 492,
+        },
+        {
+          title: "ການເຕີມພະລັງໃຈໃຫ້ຊີວິດ ຄວນປະຕິບັດຈັ່ງໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-023.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 493,
+        },
+        {
+          title: "ການບໍຣິຫານຈິດສຳລັບວັຍໜຸ່ມ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-005.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 494,
+        },
+        {
+          title: "ຄວາມທຸກມາແຕ່ໃສ ຄວາມທຸກ - ທຸກເກີດເພາະມີເຫດປັດໃຈແທ້ບໍ ?",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-008.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 495,
+        },
+        {
+          title: "ຄວາມບໍ່ປມາດທາງໂລກແລະທາງທັມ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-014.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 496,
+        },
+        {
+          title: "ຄວາມໜັກແໜ້ນ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-121.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 497,
+        },
+        {
+          title: "ຄວາມໂລບເປັນອັນຕະລາຍແກ່ທັມທັງຫລາຍ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-119.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 498,
+        },
+        {
+          title: "ສັງຄົມໂລກປ່ຽນໄປ ຫຣືໃຈເຮົາປ່ຽນກັນແທ້",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-068.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 499,
+        },
+        {
+          title: "ຕ່າງຄົນຕ່າງຄວາມຄິດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-009.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 500,
+        },
+        {
+          title: "ຕິຕຽນຄົນແບບໃດຈຶ່ງຊິໄດ້ບຸນ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-011.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 501,
+        },
+        {
+          title: "ຖ້າຢາກມີຊີວິດກ້າວໜ້າ ຕ້ອງພັທນາຈັ່ງໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-162.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 502,
+        },
+        {
+          title: "ທັມທີ່ເຮັດໃຫ້ເຮົາຫ້າວຫານ 5 ຢ່າງ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-012.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 503,
+        },
+        {
+          title: "ທັມມະກັບໜ້າທີ່ ກ່ຽວຂ້ອງກັນຢ່າງໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-006.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 504,
+        },
+        {
+          title: "ທັມມະທີ່ຈະດັບໄຟໃນສັງຄົມມີຂໍ້ໃດແດ່",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-088.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 505,
+        },
+        {
+          title: "ທັມມະມີຄວາມຈຳເປັນແກ່ຍຸວະຊົນແນວໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-038.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 506,
+        },
+        {
+          title: "ທັມມະແກ້ໄຂບັນຫາປັດຈຸບັນ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-127.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 507,
+        },
+        {
+          title: "ນິທານນົກແຂກເຕົ້າ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-051.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 508,
+        },
+        {
+          title: "ປັນຫາລູກບໍ່ຟັງຄວາມພໍ່ແມ່",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-056.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 509,
+        },
+        {
+          title: "ພະລັງແຫ່ງຄວາມຮັກ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-001.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 510,
+        },
+        {
+          title: "ພຸທສາສນາໃນປະເທດອື່ນໆ  ການກອບກູ້ພຸທສາສນາໃນວຽດນາມ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-117.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 511,
+        },
+        {
+          title: "ພັທນາຄຸນນະພາບຊີວິດເພື່ອໃຫ້ມີຄວາມໝັ້ນຄົງ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-003.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 512,
+        },
+        {
+          title: "ມະຫາປະວໍລະນາ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-004.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 513,
+        },
+        {
+          title: "ມົນທິນຊີວິດເກີດມາຈາກຄວາມບໍ່ຮູ້",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-103.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 514,
+        },
+        {
+          title: "ລັກທັມຂັດກັບໂລກແທ້ບໍ່",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-150.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 515,
+        },
+        {
+          title: "ອານຸສຕິ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-042.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 516,
+        },
+        {
+          title: "ເປັນຫຍັງຕ້ອງເຂົ້າພັນສາ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-013.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 517,
+        },
+        {
+          title: "ເຮັດຈັ່ງໃດຈຶ່ງສິມີກຳລັງໃຈຕໍ່ສູ້ກັບຊີວິດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-118.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 518,
+        },
+        {
+          title: "ເຮັດຢາສເນ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM01-126.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 519,
+        },
+        {
+          title: "ແກ້ຈຸດບອດຫົວໃຈໄດ້ຈັ່ງໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM03-010.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 520,
+        },
+        {
+          title: "ໄສຍະສາດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-133.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 521,
+        },
+        {
+          title: "ໃນເມື່ອພຣະພຸທເຈົ້ານິພານໄປແລ້ວ ແລ້ວເພິ່ນສິຊ່ອຍເຮົາໄດ້ຈັ່ງໃດ",
+          artist: "ອຈ. ໄຊຍະເດດ ວົງໂສພາ & ອຈ. ສີສຸກ ສະເຫລີມຄຸນ",
+          src: "https://lao-online.com/all_files/dhamas/mp3/DHAMMA95FM02-163.mp3",
+          album: "ທັມມະບັນຍາຍ",
+          id: 522,
+        },
+      ];
+
+      // 🎛️ ຕົວແປຫຼັກ
+      const audio = document.getElementById("audioPlayer");
+      const playBtn = document.getElementById("playBtn");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const progressBar = document.getElementById("progressBar");
+      const progress = document.getElementById("progress");
+      const currentTimeEl = document.getElementById("currentTime");
+      const durationEl = document.getElementById("duration");
+      const volumeSlider = document.getElementById("volumeSlider");
+      const playlistEl = document.getElementById("playlist");
+      const dhamaCountEl = document.getElementById("dhamaCount");
+      const albumArt = document.getElementById("albumArt");
+      const toast = document.getElementById("toast");
+      const searchInput = document.getElementById("searchInput");
+
+      let currentDhamaIndex = 0;
+      let isPlaying = false;
+      let isAutoPlay = true;
+      let isRepeat = true;
+      let isShuffled = false;
+      let dhamas = [...laoDhamas];
+      let originalDhamas = [...laoDhamas];
+
+      // ⚙️ ເລີ່ມຕົ້ນ
+      function init() {
+        audio.volume = volumeSlider.value;
+        renderPlaylist();
+        loadDhama(currentDhamaIndex);
+        setupEventListeners();
+        showToast("ຍິນດີຕ້ອນຮັບ! 🇱🇦🙏", "success");
+      }
+
+      // 🔍 ຄົ້ນຫາທັມມະ
+      function searchDhamas() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (!query) {
+          dhamas = [...originalDhamas];
+        } else {
+          dhamas = originalDhamas.filter(
+            (dhama) =>
+              dhama.title.toLowerCase().includes(query) ||
+              dhama.artist.toLowerCase().includes(query) ||
+              dhama.album.toLowerCase().includes(query),
+          );
+        }
+        currentDhamaIndex = 0;
+        renderPlaylist();
+        if (dhamas.length > 0) {
+          loadDhama(0);
+          showToast(`ພົບ ${dhamas.length} ທັມມະ ✅`, "success");
+        } else {
+          showToast("ບໍ່ພົບທັມມະທີ່ຄົ້ນຫາ ❌", "error");
+          playlistEl.innerHTML =
+            '<div class="no-results">😔 ບໍ່ພົບທັມມະທີ່ຄົ້ນຫາ</div>';
+        }
+      }
+
+      // 🎨 ສ້າງລາຍການທັມມະ
+      function renderPlaylist() {
+        playlistEl.innerHTML = "";
+        dhamaCountEl.textContent = `(${dhamas.length})`;
+
+        if (dhamas.length === 0) {
+          playlistEl.innerHTML = '<div class="empty">ບໍ່ມີທັມມະໃນລາຍການ</div>';
+          return;
+        }
+
+        dhamas.forEach((dhama, index) => {
+          const item = document.createElement("div");
+          item.className = `dhama-item ${index === currentDhamaIndex ? "active" : ""}`;
+          item.innerHTML = `
+                    <div class="dhama-info">
+                        <div class="dhama-title">${index + 1}. ${dhama.title}</div>
+                        <div class="dhama-artist">${dhama.artist}</div>
+                        <div class="dhama-album">${dhama.album}${dhama.year ? " • " + dhama.year : ""}</div>
+                    </div>
+                    <span class="dhama-duration">🎧</span>
+                `;
+          item.onclick = () => {
+            currentDhamaIndex = index;
+            loadDhama(currentDhamaIndex);
+            playDhama();
+          };
+          playlistEl.appendChild(item);
+        });
+      }
+
+      // 🙏 ໂຫຼດທັມມະ
+      function loadDhama(index) {
+        if (!dhamas[index]) return;
+        const dhama = dhamas[index];
+        audio.src = dhama.src;
+        document.getElementById("currentTitle").textContent = dhama.title;
+        document.getElementById("currentArtist").textContent = dhama.artist;
+        document.getElementById("currentAlbum").textContent =
+          dhama.album || "Lao Dhamma";
+
+        document.querySelectorAll(".dhama-item").forEach((item, i) => {
+          item.classList.toggle("active", i === index);
+        });
+      }
+
+      // ▶️ ເລ່ນທັມມະ
+      function playDhama() {
+        audio
+          .play()
+          .then(() => {
+            isPlaying = true;
+            playBtn.textContent = "⏸";
+            albumArt.classList.add("playing");
+          })
+          .catch((err) => {
+            console.log("Playback error:", err);
+            showToast("⚠️ ບາງທັມມະອາດບໍ່ສາມາດເລ່ນໄດ້ໂດຍກົງ", "error");
+          });
+      }
+
+      // ⏸️ ຢຸດທັມມະ
+      function pauseDhama() {
+        audio.pause();
+        isPlaying = false;
+        playBtn.textContent = "▶";
+        albumArt.classList.remove("playing");
+      }
+
+      // ⏭️ ທັມມະຖັດໄປ
+      function nextDhama() {
+        if (isShuffled) {
+          currentDhamaIndex = Math.floor(Math.random() * dhamas.length);
+        } else {
+          currentDhamaIndex = (currentDhamaIndex + 1) % dhamas.length;
+        }
+        loadDhama(currentDhamaIndex);
+        if (isPlaying || isAutoPlay) playDhama();
+      }
+
+      // ⏮️ ທັມມະກ່ອນ
+      function prevDhama() {
+        currentDhamaIndex =
+          (currentDhamaIndex - 1 + dhamas.length) % dhamas.length;
+        loadDhama(currentDhamaIndex);
+        if (isPlaying || isAutoPlay) playDhama();
+      }
+
+      // 🔄 ອັບເດດ progress bar
+      function updateProgress(e) {
+        const { duration, currentTime } = e.srcElement;
+        if (duration) {
+          const percent = (currentTime / duration) * 100;
+          progress.style.width = `${percent}%`;
+          currentTimeEl.textContent = formatTime(currentTime);
+          durationEl.textContent = formatTime(duration);
+        }
+      }
+
+      // ⏱️ ປ່ຽນເວລາເປັນຮູບແບບ mm:ss
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+      }
+
+      // 🎚️ ຕັ້ງຄ່າ progress ຈາກການຄລິກ
+      function setProgress(e) {
+        const width = this.clientWidth;
+        const clickX = e.offsetX;
+        const duration = audio.duration;
+        if (duration) audio.currentTime = (clickX / width) * duration;
+      }
+
+      // 🔊 ປັບສຽງ
+      function setVolume() {
+        audio.volume = volumeSlider.value;
+      }
+
+      // 🔄 ສິ້ນສຸດທັມມະ
+      function handleDhamaEnd() {
+        if (isRepeat) {
+          nextDhama();
+        } else if (currentDhamaIndex < dhamas.length - 1) {
+          nextDhama();
+        } else {
+          pauseDhama();
+          if (isAutoPlay) {
+            currentDhamaIndex = 0;
+            loadDhama(0);
+            playDhama();
+          }
+        }
+      }
+
+      // 🔀 ສັບລາຍການ
+      function shuffleDhamas() {
+        isShuffled = !isShuffled;
+        if (isShuffled) {
+          for (let i = dhamas.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [dhamas[i], dhamas[j]] = [dhamas[j], dhamas[i]];
+          }
+          currentDhamaIndex = 0;
+          loadDhama(0);
+        } else {
+          dhamas = [...originalDhamas];
+          loadDhama(currentDhamaIndex);
+        }
+        renderPlaylist();
+        showToast(
+          isShuffled ? "🔀 ສັບລາຍການແລ້ວ" : "📋 ກັບຄືນລຳດັບເດີມ",
+          "success",
+        );
+      }
+
+      // 🔗 ຄັດລອກລິ້ງທັມມະ
+      function copyPlaylist() {
+        const dhama = dhamas[currentDhamaIndex];
+        if (dhama) {
+          navigator.clipboard.writeText(dhama.src).then(() => {
+            showToast("🔗 ຄັດລອກລິ້ງທັມມະແລ້ວ!", "success");
+          });
+          window.open(dhama.src, "_blank");
+        }
+      }
+
+      // 🔄 ສະຫຼັບ AutoPlay
+      function toggleAutoPlay() {
+        isAutoPlay = !isAutoPlay;
+        const el = document.getElementById("autoPlayToggle");
+        el.textContent = `🔄 ເລ່ນອັດຕະໂນມັດ: ${isAutoPlay ? "ເປີດ" : "ປິດ"}`;
+        el.style.background = isAutoPlay ? "#e94560" : "rgba(255,255,255,0.1)";
+      }
+
+      // 🔁 ສະຫຼັບ Repeat
+      function toggleRepeat() {
+        isRepeat = !isRepeat;
+        const el = document.getElementById("repeatToggle");
+        el.textContent = `🔁 ຊ້ຳ: ${isRepeat ? "ເປີດ" : "ປິດ"}`;
+        el.style.background = isRepeat ? "#e94560" : "rgba(255,255,255,0.1)";
+      }
+
+      // 💬 ສະແດງ toast
+      function showToast(message, type = "success") {
+        toast.textContent = message;
+        toast.className = `toast show ${type === "error" ? "error" : ""}`;
+        setTimeout(() => toast.classList.remove("show"), 2500);
+      }
+
+      // 🔗 ຕິດ Event Listeners
+      function setupEventListeners() {
+        playBtn.onclick = () => (isPlaying ? pauseDhama() : playDhama());
+        prevBtn.onclick = prevDhama;
+        nextBtn.onclick = nextDhama;
+
+        audio.addEventListener("timeupdate", updateProgress);
+        audio.addEventListener("ended", handleDhamaEnd);
+        audio.addEventListener("loadedmetadata", () => {
+          durationEl.textContent = formatTime(audio.duration);
+        });
+
+        progressBar.onclick = setProgress;
+        volumeSlider.oninput = setVolume;
+        searchInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") searchDhamas();
+        });
+
+        // ຄີຍ໌ລັດ
+        document.addEventListener("keydown", (e) => {
+          if (e.code === "Space" && e.target.tagName !== "INPUT") {
+            e.preventDefault();
+            isPlaying ? pauseDhama() : playDhama();
+          }
+          if (e.code === "ArrowRight") nextDhama();
+          if (e.code === "ArrowLeft") prevDhama();
+        });
+      }
+
+      // 🚀 ເລີ່ມເຄື່ອງ!
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
